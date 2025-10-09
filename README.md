@@ -6,7 +6,7 @@
 
 ---
 
-## 📘 Project Overview
+## Project Overview
 This project aims to design, implement, and evaluate an embedded system based on the ARM Mbed platform. The system demonstrates real-time data processing, peripheral interfacing, and embedded control principles using microcontroller-based hardware.
 
 The development process includes:

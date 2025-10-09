@@ -11,10 +11,3 @@ This project focuses on the design and implementation of an autonomous smart bug
 
 The buggy is designed to detect and respond to its surroundings through onboard sensors, execute decision-making algorithms, and control its motion autonomously.
 The project demonstrates a practical application of embedded systems in robotics, combining electronics, programming, and systems engineering.
-
-The development process includes:
-
--Designing the control and sensing architecture
--Programming embedded algorithms for motion and obstacle detection
--Interfacing sensors (e.g., ultrasonic or infrared) and motor drivers
--Testing system performance under various environmental conditions

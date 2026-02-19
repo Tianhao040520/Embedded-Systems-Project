@@ -1,0 +1,10 @@
+BUILD
+.mbed
+compile_commands.json
+.clangd
+.cache
+mbed
+C12832
+Nucleo_F401RE_DS271_Battery_Monitor
+qei
+QEI

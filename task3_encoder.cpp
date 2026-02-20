@@ -143,7 +143,8 @@ int main(){
     encoder_left.reset();
     encoder_right.reset();
 
-    wait(10);
+    const float sample_time = 0.1f;
+
     while(1){
       // --- 4. EXECUTION SEQUENCE ---
         driver_board_en = 1; // Enable the H-Bridge

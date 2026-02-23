@@ -1,3 +1,4 @@
+#include "Header Files/tasks.h"
 #include "mbed.h"                         
 #include "C12832.h"
 #include "QEI.h"
@@ -67,6 +68,8 @@ static const float PI = 3.14159f;
 static const int ENCODER_RESOLUTION = 64 * 4; // PPR * X4 Encoding
 static const int TOTAL_PULSES_PER_REV = 512;
 
+static const float Right_offset = 0.04; // slow down
+
 /**
  * @brief Converts raw encoder pulses to meters
  * @param pulses The raw integer from encoder.getPulses()
@@ -120,7 +123,7 @@ static void move_straight(float target_distance, float speed) {
     encoder_right.reset();
     
     driver_board_en = 1;    // 2. Enable board and set requested speed
-    motor_left.set_speed(speed);
+    motor_left.set_speed(speed-Right_offset);
     motor_right.set_speed(speed);
 
     // 3. Monitor position (r) until target is reached
@@ -143,7 +146,7 @@ void task6_square(){
     encoder_left.reset();
     encoder_right.reset();
 
-    wait(10);
+    wait(3);
     while(1){
       // --- 4. EXECUTION SEQUENCE ---
         driver_board_en = 1; // Enable the H-Bridge
@@ -157,32 +160,38 @@ void task6_square(){
         float dist_r = measure_distance(counts_r);
 
         // Print to terminal: \r\n moves the cursor to a new line
-        pc.printf("L: %d | R: %d | DistL: %.3fm | DistR: %.3fm\r\n", counts_l, counts_r, dist_l, dist_r);
+        pc.printf("L: %d | R: %d | DistL: %.2fm | DistR: %.2fm\r\n", counts_l, counts_r, dist_l, dist_r);
+
+/*
+        for (float i = 90; i < 3; i=i+2.5) {
+        move_rotate(i, 0.5);
+        wait(4);
+        }*/
 
 
         for (int i = 0; i < 3; i++) {
-        move_straight(0.3, 0.4);
+        move_straight(0.5, 0.45);
         wait(2);
-        move_rotate(90, 0.4);
+        move_rotate(98, 0.5);
         wait(2);
         }
         
-        move_straight(0.3, 0.4);
+        move_straight(0.5, 0.45);
         wait(2);
-        move_rotate(-180, 0.4);
+        move_rotate(-180, 0.5);
         wait(3);
 
         for (int i = 0; i < 3; i++) {
-        move_straight(0.3, 0.4);
+        move_straight(0.5, 0.45);
         wait(2);
-        move_rotate(-90, 0.4);
+        move_rotate(-88, 0.5);
         wait(2);
         }
         
-        move_straight(0.3, 0.4);
+        move_straight(0.5, 0.45);
         wait(2);
-        move_rotate(180, 0.4);
-        wait(3);
+        move_rotate(-180, 0.5);
+        wait(2);
         
         
         wait(5);

@@ -1,3 +1,4 @@
+#include "Header Files/tasks.h"
 #include "mbed.h"                         
 #include "C12832.h"
 #include "QEI.h"
@@ -67,6 +68,8 @@ static const float PI = 3.14159f;
 static const int ENCODER_RESOLUTION = 64 * 4; // PPR * X4 Encoding
 static const int TOTAL_PULSES_PER_REV = 512;
 
+static const float Right_offset = 0.04; // slow down
+
 /**
  * @brief Converts raw encoder pulses to meters
  * @param pulses The raw integer from encoder.getPulses()
@@ -120,7 +123,7 @@ static void move_straight(float target_distance, float speed) {
     encoder_right.reset();
     
     driver_board_en = 1;    // 2. Enable board and set requested speed
-    motor_left.set_speed(speed);
+    motor_left.set_speed(speed-Right_offset);
     motor_right.set_speed(speed);
 
     // 3. Monitor position (r) until target is reached
@@ -143,8 +146,7 @@ void task3_encoder(){
     encoder_left.reset();
     encoder_right.reset();
 
-    const float sample_time = 0.1f;
-
+    wait(3);
     while(1){
       // --- 4. EXECUTION SEQUENCE ---
         driver_board_en = 1; // Enable the H-Bridge
@@ -158,7 +160,8 @@ void task3_encoder(){
         float dist_r = measure_distance(counts_r);
 
         // Print to terminal: \r\n moves the cursor to a new line
-        pc.printf("L: %d | R: %d | DistL: %.3fm | DistR: %.3fm\r\n", counts_l, counts_r, dist_l, dist_r);
+        pc.printf("L: %d | R: %d | DistL: %.2fm | DistR: %.2fm\r\n", counts_l, counts_r, dist_l, dist_r);
+
         
         wait(0.1);
 

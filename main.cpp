@@ -2,7 +2,7 @@
 #include "tasks.h"
 
 // Switch different task from here
-#define CURRENT_TASK 2
+#define CURRENT_TASK 6
 
 int main() {
 #if   (CURRENT_TASK == 1)

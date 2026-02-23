@@ -4,7 +4,7 @@
 #include "pin_assignment.h"
 #include <cmath> // Required for fabs()
 
-C12832 lcd(D11, D13, D12, D7, D10);
+static C12832 lcd(D11, D13, D12, D7, D10);
 
 class Motor {
 private:
@@ -43,36 +43,36 @@ public:
 
 
 // --- OBJECTS  DECLARATION---
-Motor motor_left(MOTORL_PWM_PIN, MOTORL_DIRECTION_PIN, MOTORL_BIPOLAR_PIN);
-Motor motor_right(MOTORR_PWM_PIN , MOTORR_DIRECTION_PIN, MOTORR_BIPOLAR_PIN);
+static Motor motor_left(MOTORL_PWM_PIN, MOTORL_DIRECTION_PIN, MOTORL_BIPOLAR_PIN);
+static Motor motor_right(MOTORR_PWM_PIN , MOTORR_DIRECTION_PIN, MOTORR_BIPOLAR_PIN);
 
-DigitalOut driver_board_en(DRIVER_ENABLE_PIN);
-Serial pc(USBTX, USBRX, 115200);
+static DigitalOut driver_board_en(DRIVER_ENABLE_PIN);
+static Serial pc(USBTX, USBRX, 115200);
 
 // QEI(PinName channelA, PinName channelB, PinName index, int pulsesPerRev)
-QEI encoder_left(MOTORL_CHA_PIN, MOTORL_CHB_PIN, NC, 64); 
-QEI encoder_right(MOTORR_CHA_PIN, MOTORR_CHB_PIN, NC, 64);
+static QEI encoder_left(MOTORL_CHA_PIN, MOTORL_CHB_PIN, NC, 64); 
+static QEI encoder_right(MOTORR_CHA_PIN, MOTORR_CHB_PIN, NC, 64);
 
 
-void stop_motors(){
+static void stop_motors(){
     motor_left.set_speed(0.0f); 
     motor_right.set_speed(0.0f);
 
 }
 
 // --- DIMENSIONAL ANALYSIS CONSTANTS ---
-const float WHEEL_DIAMETER = 0.083f; // 82mm in meters
-const float GEAR_RATIO = 15.0f;      // Adjust based on your specific buggy
-const float PI = 3.14159f;
-const int ENCODER_RESOLUTION = 64 * 4; // PPR * X4 Encoding
-const int TOTAL_PULSES_PER_REV = 512;
+static const float WHEEL_DIAMETER = 0.083f; // 82mm in meters
+static const float GEAR_RATIO = 15.0f;      // Adjust based on your specific buggy
+static const float PI = 3.14159f;
+static const int ENCODER_RESOLUTION = 64 * 4; // PPR * X4 Encoding
+static const int TOTAL_PULSES_PER_REV = 512;
 
 /**
  * @brief Converts raw encoder pulses to meters
  * @param pulses The raw integer from encoder.getPulses()
  * @return Distance in meters (float)
  */
-float measure_distance(int pulses) {
+static float measure_distance(int pulses) {
     // Total Ticks for one full wheel revolution
     float ticks_per_rev = TOTAL_PULSES_PER_REV;
     
@@ -83,7 +83,7 @@ float measure_distance(int pulses) {
 }
 
 
-void move_rotate(float degrees, float speed){
+static void move_rotate(float degrees, float speed){
     const float L = 0.165f; // Track width in meters
     const float PI = 3.14159f;
 
@@ -114,7 +114,7 @@ void move_rotate(float degrees, float speed){
 }
 
 
-void move_straight(float target_distance, float speed) {
+static void move_straight(float target_distance, float speed) {
     
     encoder_left.reset();   // 1. Reset encoders to establish start position (r = 0)
     encoder_right.reset();
@@ -137,7 +137,7 @@ void move_straight(float target_distance, float speed) {
 
 
 
-int main(){
+void task3_encoder(){
 
     driver_board_en = 0; // Board disabled
     encoder_left.reset();

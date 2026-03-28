@@ -1,6 +1,7 @@
 #include "mbed.h"                         
 #include "C12832.h"
 #include "QEI.h"
+#include "mbed2/299/platform/wait_api.h"
 #include "pin_assignment.h"
 #include "motor.h"
 #include "ble_turnaround.h"
@@ -33,13 +34,12 @@ const float WHEEL_DIAMETER = 0.083f; // 82mm in meters
 const float PI = 3.14159f;
 const int TOTAL_PULSES_PER_REV = 512; // rev of wheel
 
-const float TS = 0.03f; // 50ms sampling period
+const float TS = 0.035f; // 50ms sampling period
 const float DISTANCE_PER_TICK = (PI * WHEEL_DIAMETER) / TOTAL_PULSES_PER_REV;
 
 Ticker motor_ticker; 
 
 ////* ISR FUNCTIONS *////
-
 
 void motor_update_isr() {       // This function will be called automatically every 50ms
     motor_left.update_velocity(TS, DISTANCE_PER_TICK);
@@ -127,6 +127,7 @@ void check_ble_turnaround(float turn_speed) {
             pc.printf("Received S -> stop\r\n");
             hm10.putc('S');
             stop_motors();
+            wait(3);
         }
         else {
             pc.printf("Unknown BLE command: %c\r\n", c);
@@ -168,7 +169,7 @@ int main(){
         float v_left = motor_left.get_velocity();
         float v_right = motor_right.get_velocity();
 
-        pc.printf("Err: %.2f | V_L: %.2f m/s | V_R: %.2f m/s\r\n", current_error, v_left, v_right);
+        // pc.printf("Err: %.2f | V_L: %.2f m/s | V_R: %.2f m/s\r\n", current_error, v_left, v_right);
 
         check_ble_turnaround(0.25f);
 

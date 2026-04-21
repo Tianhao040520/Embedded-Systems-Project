@@ -44,8 +44,11 @@ float measure_distance(int pulses);
 void stop_motors();
 void move_straight(float target_distance, float speed);
 void move_rotate(float degrees, float speed);
+void move_rotateMANUAL(float degrees, float speed);
 
 void velocity_control(float target_vleft, float target_vright);
+
+void follow_line(float base_speed, float kp, float kd);
 
 
 

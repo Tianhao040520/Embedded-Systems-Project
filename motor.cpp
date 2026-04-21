@@ -79,7 +79,7 @@ float measure_distance(int pulses) {
 
 
 void velocity_control(float target_vleft, float target_vright) {
-    float Kp = 0.05f;
+    float Kp = 0.055f;
 
     // 1. Calculate Error (Set-point - Feedback)
     float error_l = target_vleft - motor_left.get_velocity();
@@ -137,6 +137,35 @@ void move_rotate(float degrees, float speed){
     stop_motors();
 }
 
+void move_rotateMANUAL(float degrees, float speed){
+    const float L = 0.165f; // Track width in meters
+    const float PI = 3.14159f;
+
+    // 1. Convert degrees to radians and calculate target arc length
+    float radians = std::fabs(degrees) * (PI / 180.0f);
+    float target_arc = radians * (L / 2.0f);
+
+    // 2. Setup hardware
+    encoder_left.reset();
+    encoder_right.reset();
+    driver_board_en = 1;
+
+    // 3. Set directions based on sign of 'degrees'
+    if (degrees > 0) {
+        motor_left.set_duty(-speed);     // Forward
+        motor_right.set_duty(speed);   // Backward (Clockwise)
+    } else {
+        motor_left.set_duty(speed);    // Backward
+        motor_right.set_duty(-speed);     // Forward (Anti-clockwise)
+    }
+
+    while (std::fabs(measure_distance(encoder_left.getPulses())) < target_arc) {
+        wait(0.02);
+    }
+
+    stop_motors();
+    driver_board_en = 0;
+}
 
 void move_straight(float target_distance, float speed) {
     
